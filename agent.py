@@ -7,6 +7,7 @@ from livekit.plugins import (
 )
 from livekit.plugins import google
 from prompts import AGENT_INSTRUCTION, SESSION_INSTRUCTION
+from tools import get_weather, web_search
 
 load_dotenv()
 
@@ -16,7 +17,7 @@ class Assistant(Agent):
         super().__init__(
             instructions=AGENT_INSTRUCTION,
             llm=google.beta.realtime.RealtimeModel(voice="Charon", temperature=0.7, ),
-            
+            tools=[get_weather, web_search],
         )
 
 
@@ -28,7 +29,6 @@ async def entrypoint(ctx: agents.JobContext):
         agent=Assistant(),
         room_input_options=RoomInputOptions(
             video_enabled=True,
-            # For telephony applications, use `BVCTelephony` instead for best results
             noise_cancellation=noise_cancellation.BVC(),
         ),
     )
